@@ -29,7 +29,6 @@ def init():
     global player, isGameLoop, stage
     isGameLoop = True
     stage = 1
-    player = None
     spacing(100)
     print(style("At a young age, your village was destroyed by the evil Orc Lord. Now that you are of age to get your first trait, you vow to hunt down the monster and defeat him.", "cyan", "italic"))
     spacing(1)
@@ -470,7 +469,7 @@ def lore(key):
 def askRestart():
     validInput = False
     spacing(3)
-    print(f"Do you want to restart? ([{green("Yes")}] or [{red("No")}])")
+    print(f"Do you want to restart? ([{green('Yes')}] or [{red('No')}])")
     while validInput == False:
         choice = input().casefold()
         spacing(1)
