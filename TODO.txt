@@ -1,0 +1,24 @@
+====================CURRENTLY WORKING ON====================
+  -Expanding levels
+---------------------------------------------------------
+====================PRIORITIES====================
+  -More stages
+  -Story
+  -make skill bound to player on creation
+  -Add dev features: Stat modification
+  -Fix traits error when reaching highest trait level
+--------------------------------------------------
+
+======================ADD-ONS=====================
+  -Endless mode?
+  -Hit chance
+  -Monster fighting skills---
+
+====================NOTES====================
+  -3 stages, locked behind essence
+----------------------------------------------
+====================STORY====================
+  -Essence: All creatures have essence, which makes them stronger. Humans can kill monsters to gather their essence, which in turn strenghthens the human.
+  -Boss - DRAGON
+  -You want to be a dragon slayer
+-------------------------------------------

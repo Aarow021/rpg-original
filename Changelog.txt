@@ -1,0 +1,50 @@
+4/21/24:
+    -Started changelog
+    Basic monsters
+    Stats
+    Fighting
+    --
+    Added stamina (WIP)
+    Started Skills
+
+4/22/24:
+    Attack skill created
+
+4/24/24:    
+    Began random encounters [Rest, Battle, shop]
+    Balancing
+    Can now display skills
+
+4/26/24:
+    Shop functional
+    Added potions
+    Added Flee skill
+    Added stamina implementation
+    ---
+    added rest
+    Added COLORS
+
+4/27/24:
+    Traits functional
+    Trait selection (Power, Toughness, Mana)
+    Buff
+
+2/28/24:
+    new enemies
+    Skill cooldowns
+    Balancing
+        -stamina/mp regen only occurs if not using a skill of the same cost type
+    3 new Traits with skills
+    stage 2
+
+2/29/24:
+    Buffed reflective aura
+    Nerfed enemies
+    added boss (temp, for AP project turning in)
+    Fixed escaping not reseting skill buffs/cooldowns
+    monster image
+    changed shop prices
+    Mana Recovery scales based on max mana
+5/1/24:
+    Fixed ending
+    Continue after death (or end) prompt
