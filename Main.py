@@ -329,9 +329,9 @@ def selectPotion():
     hpKeyWords = ["1", "hp", "health", "health potion", "health pot"]
     mpKeyWords = ["2", "mp", "mana", "mana potion", "mana pot"]
 
-    print("Health Potions: [" + red(player.potions["hp"]) + "]")
-    print("Mana Potions: [" + blue(player.potions["mp"]) + "]")
     print("What potion would you like to use?")
+    print(f"({green(1)})Health Potions: [" + red(player.potions["hp"]) + "]")
+    print(f"({green(2)})Mana Potions: [" + blue(player.potions["mp"]) + "]")
     choice = input("> ").casefold()
     if choice in hpKeyWords:
         if player.potions["hp"] <= 0:
@@ -380,6 +380,7 @@ def shop():
     print("What would you like to buy? (\"exit\" to leave)")
     print(f"({green(1)})[" + red("Health") + " Potion]: " + yellow(healthCost) + " Gold")
     print(f"({green(2)})[" + blue("Mana") + " Potion]: " + yellow(manaCost) + " Gold")
+    print(f"({green(3)})[Exit]")
     spacing(1)
     
     while shopping:
@@ -402,7 +403,7 @@ def shop():
                 shopping = False
             else:
                 print("You dont have enough gold to buy this")
-        elif choice == "exit":
+        elif choice == "exit" or choice == "3":
             print("The merchant waves you goodbye")
             awaitInput()
             return
@@ -444,7 +445,7 @@ def selectDevCommand(selection):
             player.essence += essence
         except:
             print("Invalid input")
-    elif selection == "change stat":
+    elif selection == "change stat" or selection == "stat":
         availableStats = ["hp", "mp", "stamina", "toughness", "power", "gold", "essence"]
         def isAStat(stat):
             stat = str(stat).casefold()
@@ -486,7 +487,7 @@ def gameLoop():
     init()
     spacing(100)
     while isGameLoop:
-        spacing(10)
+        spacing(4)
         availableCommands = [f"({green(1)})Journey", f"({green(2)})Stats"]
         listCommands(availableCommands)
         selection = input("Please select an option: ").casefold()
@@ -519,8 +520,10 @@ while askRestart():
 
 spacing(2)
 print("Goodbye")
-for i in range(100):
-    awaitInput()
-print(style("Wow, you really pressed enter 100 times! Well this is an easter egg I suppose. Take it! 🥚", "purple", "italic"))
-for i in range(10):
-    awaitInput()
+randVal = random.choice(range(100))
+if randVal == 0:
+    for i in range(100):
+        awaitInput()
+    print(style("Wow, you really pressed enter 100 times! Well this is an easter egg I suppose. Take it! 🥚", "purple", "italic"))
+    for i in range(10):
+        awaitInput()

@@ -1,11 +1,8 @@
 ====================CURRENTLY WORKING ON====================
-  -Expanding levels
+  -Stamina potion
 ---------------------------------------------------------
 ====================PRIORITIES====================
-  -More stages
-  -Story
   -make skill bound to player on creation
-  -Add dev features: Stat modification
   -Fix traits error when reaching highest trait level
 --------------------------------------------------
 
@@ -13,6 +10,7 @@
   -Endless mode?
   -Hit chance
   -Monster fighting skills---
+  -Journey path choices?
 
 ====================NOTES====================
   -3 stages, locked behind essence

@@ -19,7 +19,6 @@ class Monster(Character):
         print("HP: " + self.display("hp") + "/" + self.display("maxhp"))
         print("Power: " + self.display("power"))
         printSeperator(27, "-")
-        awaitInput()
     
     #returns the damage delt to the monster. Different calculation than default character
     def defend(self, dmg):

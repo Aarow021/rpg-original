@@ -14,25 +14,25 @@ class Player(Character):
     
     def statsheet(self):
         self.calculateStats()
-        printSeperator(30, "═")
         print('''
     O
    \|/ 
     |
    / \\
               ''')
+        printSeperator(30, "═")
         print("Traits: ", end="")
         for trait in self.traits.values():
             print("[" + trait.displayName() + "]", end="")
         print()
         print("HP: " + self.display("hp") + "/" + self.display("maxHP"))
+        print("Stamina: " + self.display("stamina") + "/" + self.display("stamina"))
         print("MP: " + self.display("mp") + "/" + self.display("maxMP"))
         print("Power: " + self.display("Power"))
         print("Toughness: " + self.display("Toughness"))
         print("Essence: " + self.display("Essence"))
         print("Gold: " + self.display("Gold"))
         printSeperator(30, "═")
-        awaitInput()
 
     def displaySkills(self):
         printSeperator(30)
