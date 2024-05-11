@@ -3,7 +3,9 @@
 
 import math
 import functools
-from decimal import * # type: ignore
+from decimal import *
+
+from Colors import colorStat # type: ignore
 
 #Custom print method
 def printf(text, args=None):
@@ -58,6 +60,12 @@ def listToString(list):
     string = ""
     for element in list:
         string += "[" + str(element) + "] "
+    return string
+
+def listToStringColored(list):
+    string = ""
+    for element in list:
+        string += "[" + colorStat(element, element) + "] "
     return string
 
 #Gets the product of all elements in a list of numbers

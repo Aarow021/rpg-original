@@ -1,5 +1,5 @@
 ====================CURRENTLY WORKING ON====================
-  -Stamina potion
+
 ---------------------------------------------------------
 ====================PRIORITIES====================
   -make skill bound to player on creation
@@ -11,6 +11,7 @@
   -Hit chance
   -Monster fighting skills---
   -Journey path choices?
+  -Shop into a class : Shop.addItem(name, cost, effect (a function))
 
 ====================NOTES====================
   -3 stages, locked behind essence

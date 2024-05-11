@@ -48,7 +48,7 @@ class Character:
         self.toughnessMultis = {}
         self.staminaMultis = {}
         self.traits = {}
-        self.potions = {"hp": 0, "mp": 0}
+        self.potions = {"hp": 0, "mp": 0, "stamina": 0}
     #Calibrates stats with its multipliers
     #Use before doing anything with power/toughness
     def calculateStats(self):

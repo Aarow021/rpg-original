@@ -81,13 +81,9 @@ def color(message, colorCode):
 #Returns the message with the color related to that stat
 def colorStat(value, stat):
     stat = str(stat).lower()
-    if stat == "hp":
+    if stat == "hp" or stat == "health" or stat == "maxhp":
         return style(value, "red")
-    elif stat == "maxhp":
-        return style(value, "red")
-    elif stat == "mp":
-        return style(value, "blue")
-    elif stat == "maxmp":
+    elif stat == "mp" or stat == "mana" or stat == "maxmp":
         return style(value, "blue")
     elif stat == "essence":
         return style(value, "cyan")
@@ -97,7 +93,7 @@ def colorStat(value, stat):
         return style(value, "purple")
     elif stat == "toughness":
         return style(value, "green")
-    elif stat == "stamina":
+    elif stat == "stamina" or stat == "stm":
         return style(value, "yellow")
     return
 

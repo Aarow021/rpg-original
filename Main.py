@@ -326,14 +326,12 @@ def fight(monster, dmg, dmgTaken, attackType):
         
 #Player selects a potion to drink - if they have any
 def selectPotion():
-    hpKeyWords = ["1", "hp", "health", "health potion", "health pot"]
-    mpKeyWords = ["2", "mp", "mana", "mana potion", "mana pot"]
-
     print("What potion would you like to use?")
     print(f"({green(1)})Health Potions: [" + red(player.potions["hp"]) + "]")
     print(f"({green(2)})Mana Potions: [" + blue(player.potions["mp"]) + "]")
+    print(f"({green(3)})Stamina Potions: [" + yellow(player.potions["stamina"]) + "]")
     choice = input("> ").casefold()
-    if choice in hpKeyWords:
+    if choice == "1":
         if player.potions["hp"] <= 0:
             print("You don't have any health potions!")
             return
@@ -341,7 +339,7 @@ def selectPotion():
         player.changeHP(healed)
         player.potions["hp"] -= 1
         print("you drink a health potion and regain [" + red(healed) + "] health!")
-    elif choice in mpKeyWords:
+    elif choice == "2":
         if player.potions["mp"] <= 0:
             print("You don't have any mana potions!")
             return
@@ -349,6 +347,14 @@ def selectPotion():
         player.changeMP(recovered)
         player.potions["mp"] -= 1
         print("you drink a mana potion and regain [" + blue(recovered) + "] mana!")
+    elif choice == "3":
+        if player.potions["stamina"] <= 0:
+            print("You don't have any stamina potions!")
+            return
+        recovered = round(player.maxStamina, 2)
+        player.changeStamina(recovered)
+        player.potions["stamina"] -= 1
+        print("you drink a stamina potion and regain [" + yellow(recovered) + "] stamina!")
         
 #Player regains stamina, health, and mana
 #REST----------------------------------------------------------------------------------------------------------
@@ -369,10 +375,9 @@ def rest():
 #Player can buy potions here
 def shop():
     shopping = True
-    hpKeyWords = ["1", "hp", "health", "health potion", "health pot"]
-    mpKeyWords = ["2", "mp", "mana", "mana potion", "mana pot"]
-    healthCost = round(10*stage + (player.gold/5 + 1), 2) # type: ignore
-    manaCost = round(10*stage + (player.gold/5 + 1), 2) # type: ignore
+    healthCost = round(10*stage + (player.gold/5 + 1), 2)
+    manaCost = round(5*stage + (player.gold/5 + 1), 2)
+    staminaCost = round(3*stage + (player.gold/5 + 1), 2)
     spacing(100)
     print("You come apon a travelling merchant. He offers you some potions.")
     spacing(1)
@@ -380,35 +385,42 @@ def shop():
     print("What would you like to buy? (\"exit\" to leave)")
     print(f"({green(1)})[" + red("Health") + " Potion]: " + yellow(healthCost) + " Gold")
     print(f"({green(2)})[" + blue("Mana") + " Potion]: " + yellow(manaCost) + " Gold")
-    print(f"({green(3)})[Exit]")
+    print(f"({green(3)})[" + yellow("Stamina") + " Potion]: " + yellow(staminaCost) + " Gold")
+    print(f"({green(4)})[{red("Leave")}]")
     spacing(1)
     
     while shopping:
         choice = input("> ").casefold()
         spacing(1)
-        if choice in hpKeyWords:
+        if choice == "1":
             if player.gold >= healthCost:
                 print("You buy a [health potion]")
-                print("The merchant smiles and waves you goodbye")
                 player.potions["hp"] += 1
-                shopping = False
+                player.gold -= healthCost
             else:
                 print("You dont have enough gold to buy this")
             
-        elif choice in mpKeyWords:
+        elif choice == "2":
             if player.gold >= manaCost:
                 print("You buy a [mana potion]")
-                print("The merchant smiles and waves you goodbye")
                 player.potions["hp"] += 1
-                shopping = False
+                player.gold -= manaCost
             else:
                 print("You dont have enough gold to buy this")
-        elif choice == "exit" or choice == "3":
+        elif choice == "3":
+            if player.gold >= staminaCost:
+                print("You buy a [stamina potion]")
+                player.potions["stamina"] += 1
+                player.gold -= staminaCost
+            else:
+                print("You dont have enough gold to buy this")
+        elif choice == "exit" or choice == "4":
             print("The merchant waves you goodbye")
             awaitInput()
             return
         else:
-            print("Please enter a valid response. (\"exit\" to leave)")
+            print("Please enter a valid response.")
+        print("Gold: [" + player.display("gold") + "]")
     awaitInput()
 
 #commands that is always able to be called
@@ -453,7 +465,7 @@ def selectDevCommand(selection):
                 if stat == availableStat:
                     return True
             return False #If input not in available stats
-        print("Available Stats: " + listToString(availableStats) + "\nWhat stat do you want to change?")
+        print("Available Stats: " + listToStringColored(availableStats) + "\nWhat stat do you want to change?")
         stat = validateInput("", "string", "Please enter a valid stat", isAStat)
         print("\nWhat do you want to set the stat to?")
         value = validateInput("", "float", "Please enter a number greater than or equal to 0", lambda x: True if x >= 0 else None)
