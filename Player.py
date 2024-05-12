@@ -5,12 +5,14 @@ from Character import *
 from Colors import *
 import random
 class Player(Character):
-    type = "Player"
-    restCountdown = 3
-    restCooldown = 2
-    shopCooldown = 3
-    monstersKilled = 0
-
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, *kwargs)
+        self.type = "player"
+        self.restCountdown = 3
+        self.restCooldown = 2
+        self.shopCooldown = 3
+        self.monstersKilled = 0
     
     def statsheet(self):
         self.calculateStats()
@@ -26,7 +28,7 @@ class Player(Character):
             print("[" + trait.displayName() + "]", end="")
         print()
         print("HP: " + self.display("hp") + "/" + self.display("maxHP"))
-        print("Stamina: " + self.display("stamina") + "/" + self.display("stamina"))
+        print("Stamina: " + self.display("stamina") + "/" + self.display("maxStamina"))
         print("MP: " + self.display("mp") + "/" + self.display("maxMP"))
         print("Power: " + self.display("Power"))
         print("Toughness: " + self.display("Toughness"))
@@ -40,7 +42,7 @@ class Player(Character):
         print("Active skills: " + str(*[f"[{green(str(skill.name).capitalize())}({cyan(skill.turnsLeft)})]" for skill in skills if skill.type == "buff" and skill.turnsLeft > 0]))
         count = 0
         for skill in skills:
-            skill.configure(self)
+            skill.configure()
             count += 1
             cost = None
             if skill.costType == "mp":

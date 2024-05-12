@@ -3,17 +3,7 @@
 
 from Colors import *
 
-class Trait:
-    upgradeTree = "attack"
-    name = "Base Trait"
-    desc = "This is a basic trait"
-    hpMulti = 1
-    toughnessMulti = 1
-    powerMulti = 1
-    mpMulti = 1
-    staminaMulti = 1
-    skills = []
-    #What trait this one overwrites (replaces)
+class Trait:  
     overWrites = None
     def __init__(self, upgradeTree, name, hpMulti, toughnessMulti, powerMulti, mpMulti, staminaMulti, skills, desc, overWrites=None):
         self.upgradeTree = upgradeTree
@@ -25,7 +15,8 @@ class Trait:
         self.mpMulti = mpMulti
         self.staminaMulti = staminaMulti
         self.skills = skills
-        self.overWrites = overWrites
+        self.overWrites = overWrites #What trait this one overwrites (replaces)
+        self.holder = None #What character holds this trait. Initialized in bind()
 
     #Applies the stat bonuses to the holder of the trait
     def applyStats(self, target):
@@ -38,7 +29,7 @@ class Trait:
     #Applies the trait's skills to the target
     def setSkills(self, target):
         for skill in self.skills:
-            target.skills[skill.name] = skill
+            skill.bind(target)
     
     #Removes all the effects the trait has on its holder and deletes itself
     def removeTrait(self, player):
@@ -57,7 +48,8 @@ class Trait:
             removedTrait.removeTrait(player)
 
     #Called once at the creation of the trait
-    def init(self, target):
+    def bind(self, target):
+        self.holder = target
         self.applyStats(target)
         self.replaceTrait(target)
         self.setSkills(target)

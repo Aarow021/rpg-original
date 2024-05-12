@@ -5,7 +5,7 @@ from Functions import spacing, printSeperator, awaitInput
 from Character import *
 from Colors import *
 class Monster(Character):
-    type = "Monster"
+    type = "Monster" #Actually default in effect
 
 
     def listHP(self):

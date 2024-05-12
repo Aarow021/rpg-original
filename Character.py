@@ -5,31 +5,31 @@ from Functions import *
 
 #Base class for entities such as Player and Monsters
 class Character:
-    type = "Character"
-    baseMaxHP = 100
-    basePower = 1
-    baseMaxMP = 10
-    baseToughness = 1
-    maxHP = baseMaxHP
-    hp = maxHP
-    power = basePower
-    maxMP = baseMaxMP
-    mp = maxMP
-    toughness = 1
-    baseMaxStamina = 10
-    maxStamina = 10
-    stamina = maxStamina
-    skills = {}
-    essence = 0
-    gold = 0
-    #{Multi name, value}
-    hpMultis = {}
-    mpMultis = {}
-    powerMultis = {}
-    toughnessMultis = {}
-    staminaMultis = {}
-    traits = {}
-    potions = {"hp": 0, "mp": 0}
+    # type = "Character"
+    # baseMaxHP = 100
+    # basePower = 1
+    # baseMaxMP = 10
+    # baseToughness = 1
+    # maxHP = baseMaxHP
+    # hp = maxHP
+    # power = basePower
+    # maxMP = baseMaxMP
+    # mp = maxMP
+    # toughness = 1
+    # baseMaxStamina = 10
+    # maxStamina = 10
+    # stamina = maxStamina
+    # skills = {}
+    # essence = 0
+    # gold = 0
+    # #{Multi name, value}
+    # hpMultis = {}
+    # mpMultis = {}
+    # powerMultis = {}
+    # toughnessMultis = {}
+    # staminaMultis = {}
+    # traits = {}
+    # potions = {"hp": 0, "mp": 0}
 
     def __init__(self, maxHP, power, maxMP, toughness, maxStamina, essence=0, gold=0, type="Default", image = ""):
         self.baseMaxHP, self.maxHP, self.hp = maxHP, maxHP, maxHP
@@ -49,6 +49,7 @@ class Character:
         self.staminaMultis = {}
         self.traits = {}
         self.potions = {"hp": 0, "mp": 0, "stamina": 0}
+        
     #Calibrates stats with its multipliers
     #Use before doing anything with power/toughness
     def calculateStats(self):
@@ -105,6 +106,8 @@ class Character:
             return style(round(self.toughness, 2), "green")
         elif stat == "stamina":
             return style(round(self.stamina, 2), "yellow")
+        elif stat == "maxstamina":
+            return style(round(self.maxStamina, 2), "yellow")
         return
 
     #Resets all the skill cooldowns and resets buffs on creature

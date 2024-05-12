@@ -6,37 +6,41 @@ from Colors import colorStat, cyan
 
 
 class Skill:
-    name = "GenericSkill"
-    type = "generic"    #Buff, Damaging, Defensive
-    costType = "stamina"   #stm, mp, hp
-    cost = 0
-    skillValue = 1    #Damage multi, toughness, Damage (one instance), ect
-    castMessage = "You cast genericSpell!"
-    description = "This is the base skill class; has no effect"
-    cooldown = 0
-    cooldownCap = 0
-    mods = []  #Mods change the way the skill works. ex: "reflect" uses the enemies damage instead
+    # name = "GenericSkill"
+    # type = "generic"    #Buff, Damaging, Defensive
+    # costType = "stamina"   
+    # cost = 0
+    # skillValue = 1    
+    # castMessage = "You cast genericSpell!"
+    # description = "This is the base skill class; has no effect"
+    # cooldown = 0
+    # cooldownCap = 0
+    # mods = []  #Mods change the way the skill works. ex: "reflect" uses the enemies damage instead
+    # holder = None  
 
     def __init__(self, name, type, costType, cost, skillValue, description, castMessage, cooldown=0, mods = []):
         availableCostTypes = ["mp", "stamina"]
         if costType not in availableCostTypes:
             print("Skill has invalid cost type: [" + str(costType) + "]")
             costType = "mp"
-        self.name = str(name).casefold()
+        self.name = str(name)
         self.type = type
-        self.costType = costType
+        self.costType = costType #stamina, mp, hp
         self.cost = cost
-        self.skillValue = skillValue
+        self.skillValue = skillValue #Damage multi, toughness, Damage (one instance), ect
         self.description = description
         self.castMessage = castMessage
+        self.cooldown = 0
         self.cooldownCap = cooldown
-        self.mods = mods
+        self.mods = mods #Mods change the way the skill works. ex: "reflect" uses the enemies damage instead
+        self.holder = None #Character that skill is bound to. use skill.bind(character) to initialize holder
 
     #Makes the spell do it's effect
-    def cast(self, caster, target=None):
+    def cast(self, target=None):
+        caster = self.holder
         self.cooldown = self.cooldownCap + 1
         if self.type == "attack":
-            self.consumeResource(caster)
+            self.consumeResource()
             if "reflect" in self.mods:
                 #skillValue should be a number between 0 and 1. smaller number = more damage delt and less taken
                 return target.attack() * abs( 1 - self.skillValue) + caster.attack()
@@ -44,8 +48,9 @@ class Skill:
                 return caster.attack() * self.skillValue
 
     #Returns True if the skill can be used, and returns the message why it cant be used if it cant be used
-    def checkUsability(self, caster):
-        self.configure(caster)
+    def checkUsability(self):
+        caster = self.holder
+        self.configure()
         if self.costType == "mp":
             if caster.mp < self.cost:
                 return self.tooExpensiveMessage()
@@ -61,7 +66,8 @@ class Skill:
         return "Insufficient [" + colorStat(self.costType, self.costType) + "]"
 
     #Consumes the resource from the caster [mp, stamina] when spell is cast
-    def consumeResource(self, caster):
+    def consumeResource(self):
+        caster = self.holder
         if self.costType == "mp":
             caster.mp -= self.cost
         elif self.costType == "stamina":
@@ -73,8 +79,12 @@ class Skill:
             self.cooldown -= 1
     
     #placeholder for other skill types.
-    def configure(self, caster=None):
+    def configure(self):
         pass
+
+    def bind(self, character):
+        self.holder = character
+        character.skills[self.name] = self
 
 #This skill converts one resource type to another
 class ConvertionSkill(Skill):
@@ -94,19 +104,15 @@ class ConvertionSkill(Skill):
         if convertTo not in availableCostTypes:
             print("Skill has invalid cost type: [" + str(convertTo) + "]")
             convertTo = "stamina"
-        self.name = str(name).casefold()
-        self.costType = costType
         self.convertTo = convertTo
-        self.cost = cost
         self.convertionRatio = convertionRatio
-        self.description = description
-        self.castMessage = castMessage
-        self.cooldownCap = cooldown
+        super().__init__(name, "conversion", costType, cost, convertionRatio, description, castMessage, cooldown=cooldown)
 
     #Overrights default cast function
-    def cast(self, caster, target=None):
+    def cast(self, target=None):
+        caster = self.holder
         self.cooldown = self.cooldownCap + 1
-        self.consumeResource(caster)
+        self.consumeResource()
         self.castMessage = "You have recovered [" + colorStat(round(self.cost * self.convertionRatio, 2), self.convertTo) + "] " + self.convertTo
         if self.convertTo == "mp":
             caster.changeMP(self.cost * self.convertionRatio)
@@ -115,7 +121,8 @@ class ConvertionSkill(Skill):
         return 0
     
     #Sets the cost to a percentage of the resource that the caster is converting to
-    def configure(self, caster):
+    def configure(self):
+        caster = self.holder
         casterResources = {"mp": caster.maxMP, "stamina": caster.maxStamina}
         self.cost = 1 + casterResources[self.convertTo]/3
         if self.cost > casterResources[self.costType]:
@@ -123,33 +130,31 @@ class ConvertionSkill(Skill):
     
 #This skill type effects the stats of the target
 class BuffSkill(Skill):
-    name = "buffskill"
-    type = "buff"
-    costType = "stamina"
-    cost = 0
-    skillValue = 1 #Stat multi
-    duration = 0
-    turnsLeft = 0 #Duration left
-    stats = ["power", "toughness"]
-    castMessage = "You cast BuffSkill!"
-    description = "Buff skill can buff or debuff!"
-    currentTarget = None  #Entity that is being buffed
+    # name = "buffskill"
+    # type = "buff"
+    # costType = "stamina"
+    # cost = 0
+    # skillValue = 1 #Stat multi
+    # duration = 0
+    # turnsLeft = 0 #Duration left
+    # stats = ["power", "toughness"]
+    # castMessage = "You cast BuffSkill!"
+    # description = "Buff skill can buff or debuff!"
+    # currentTarget = None  #Entity that is being buffed
     def __init__(self, name, costType, cost, stats, skillValue, duration,  description, castMessage, cooldown=0):
-        self.name = str(name).casefold()
-        self.costType = costType
-        self.cost = cost
-        self.stats = stats
-        self.skillValue = skillValue
+        self.stats = stats 
         self.duration = duration
-        self.description = description
-        self.castMessage = castMessage
         self.cooldownCap = cooldown if cooldown > self.duration else self.duration
+        self.currentTarget = None
+        self.turnsLeft = 0
+        super().__init__(name, "conversion", costType, cost, skillValue, description, castMessage, cooldown=self.cooldownCap)
 
         
     #Called when the skill is cast
-    def cast(self, caster, target):
+    def cast(self, target):
+        caster = self.holder
         self.cooldown = self.cooldownCap + 1
-        self.consumeResource(caster)
+        self.consumeResource()
         self.currentTarget = target
         if "power" in self.stats:
             target.powerMultis[self.name] = self.skillValue

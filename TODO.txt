@@ -4,6 +4,7 @@
 ====================PRIORITIES====================
   -make skill bound to player on creation
   -Fix traits error when reaching highest trait level
+  -Character init function - call after creation to set child specific attributes (type="player"), ect
 --------------------------------------------------
 
 ======================ADD-ONS=====================
@@ -12,6 +13,7 @@
   -Monster fighting skills---
   -Journey path choices?
   -Shop into a class : Shop.addItem(name, cost, effect (a function))
+  -Player save and load JSON
 
 ====================NOTES====================
   -3 stages, locked behind essence

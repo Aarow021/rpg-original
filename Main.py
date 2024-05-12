@@ -32,11 +32,13 @@ def init():
     spacing(100)
     print(style("At a young age, your village was destroyed by the evil Orc Lord. Now that you are of age to get your first trait, you vow to hunt down the monster and defeat him.", "cyan", "italic"))
     spacing(1)
-    #initializes the player (maxHP, power, maxMP, toughness, maxStamina, essence, gold, type)
-    player = Player(10, 1, 3, 1, 5, 0, 0, "Player")
+    #initializes the player (maxHP, power, maxMP, toughness, maxStamina, essence, gold)
+    player = Player(10, 1, 3, 1, 5, 0, 0)
     #Skill comes in format: Skill(Name, "Type", "CostType", cost, skillValue, description, CastMessage)
-    player.skills["Punch"] = Skill("Punch", "attack", "stamina", 1, 1, "A normal punch", "You throw a punch")
-    player.skills["Mana Burst"] = Skill("Mana Burst", "attack", "mp", 2, 1.5, "Shoots a burst of unrefined mana", "You shoot a burst of mana!")
+    punch = Skill("Punch", "attack", "stamina", 1, 1, "A normal punch", "You throw a punch")
+    manaBurst = Skill("Mana Burst", "attack", "mp", 2, 1.5, "Shoots a burst of unrefined mana", "You shoot a burst of mana!")
+    punch.bind(player)
+    manaBurst.bind(player)
 
     selectTrait()
     
@@ -73,7 +75,7 @@ def selectTrait():
                 groundStomp = Skill("Meteor Strike", "attack", "stamina", 6, 3, "Leap high into the air and land a devistating kick onto the opponent's head", "You jump into the air and strike from above!")
                 trait = Trait("power", powerTrait, 1, 1.4, 2.5, 1, 1.4, [strongPunch, groundStomp], "Your strength is immense", player.traits["Big Muscles"])
             player.traits[powerTrait] = trait
-            trait.init(player)
+            trait.bind(player)
             validInput = True
 
         elif selection == toughnessTrait.casefold() or selection == "2":
@@ -86,7 +88,7 @@ def selectTrait():
                 reflectiveAura = Skill("Reflective Aura", "attack", "stamina", 4, .5, "For a turn, generates an aura that reflects half of the attacker's damage", "You release a reflective aura.", 0, ["reflect"])
                 trait = Trait("toughness", toughnessTrait, 1.5, 2, 1.2, 1, 1.6, [cobaltShell, reflectiveAura], "Your fortitude is akin to Goliath", player.traits["Thick Skin"])
             player.traits[toughnessTrait] = trait
-            trait.init(player)
+            trait.bind(player)
             validInput = True
         
         elif selection == mpTrait.casefold() or selection == "3":
@@ -101,7 +103,7 @@ def selectTrait():
                 enhance = BuffSkill("Enhance", "mp", 7, ["power", "toughness"], 2, 3, "Enhances the user's body with magic, increasing their power and toughness.", "You enhance your body")
                 trait = Trait("mp", mpTrait, 1, 1, 1, 3, 1, [manaRecovery, magicMissile, enhance], "You have developed a mana core", player.traits["Mana Affinity"])
             player.traits[mpTrait] = trait
-            trait.init(player)
+            trait.bind(player)
             validInput = True
 
         if not validInput:
@@ -208,25 +210,25 @@ def battle():
                     skill = player.skills[player.getOrderedSkills()[action]]
                 else:
                     skill = player.skills[action]           
-                if skill.checkUsability(player) == True:
+                if skill.checkUsability() == True:
                     attackType = skill.costType
                     if skill.type == "attack":
                         if "reflect" in skill.mods:
-                            dmg = skill.cast(player, monster)
+                            dmg = skill.cast( monster)
                             dmgTaken = player.defend(monster.attack() * skill.skillValue)
                         else:
-                            dmg = monster.defend(skill.cast(player))
+                            dmg = monster.defend(skill.cast())
                             dmgTaken = player.defend(monster.attack())
                         nextTurn = True
 
                     elif skill.type == "buff":
-                        skill.cast(player, player)
+                        skill.cast(player)
                     elif skill.type == "conversion":
                         skill.cast(player)
                         nextTurn = True
                     print(skill.castMessage)
                 else:
-                   print(skill.checkUsability(player)) #Returns error message
+                   print(skill.checkUsability()) #Returns error message
             else:
                 print("Invalid skill")
         elif action == "inspect" or action == "2":
@@ -471,7 +473,7 @@ def selectDevCommand(selection):
         value = validateInput("", "float", "Please enter a number greater than or equal to 0", lambda x: True if x >= 0 else None)
         player.changeStat(stat, value)
     elif selection == "test":
-        print("Nothing in test for now")
+        print(player.type)
 
 #prints out lore based on events - Will be used more after the AP submission
 def lore(key):
@@ -515,9 +517,8 @@ def gameLoop():
             isDev = True
             print("Dev mode activated")
             listCommands(devCommands)
-            player.skills["InstaKill"] = Skill("InstaKill", "attack", "stamina", 0, 9999, "Instantly kills the enemy", "You instantly kill the enemy.")
-            # player.skills["Gimme Gimme Gimme Stamina"] = Skill("Gimme Gimme Gimme Stamina", "attack", "stamina", -9999999999999999, 0, "Gimme the stamina!", "Alright, here you go.")
-            # player.skills["Gimme Gimme Gimme Mana"] = Skill("Gimme Gimme Gimme Mana", "attack", "mp", -9999999999999999, 0, "Gimme the mana!", "Alright, here you go.") 
+            instaKill = Skill("InstaKill", "attack", "stamina", 0, 9999, "Instantly kills the enemy", "You instantly kill the enemy.")
+            instaKill.bind(player)
         if isDev:
             selectDevCommand(selection)
     

@@ -2,7 +2,9 @@
 5/11/24:
     Added stamina potion
     Can buy multiple items in shop in 1 trip
-
+    (optimization):
+        skills and attributes now bound to player on creation
+        reduced redundant code in class init
 5/9/24:
     Added numbers to potion selection
     Stats displays stamina
