@@ -5,8 +5,8 @@ from Colors import *
 
 class Trait:  
     overWrites = None
-    def __init__(self, upgradeTree, name, hpMulti, toughnessMulti, powerMulti, mpMulti, staminaMulti, skills, desc, overWrites=None):
-        self.upgradeTree = upgradeTree
+    def __init__(self, upgradeTree, name, hpMulti, toughnessMulti, powerMulti, mpMulti, staminaMulti, skills, desc, overWrites=None, nextTraits=[]):
+        self.upgradeTree = upgradeTree #Type of trait. ex: Power, Toughness, Mana
         self.name = name
         self.desc = desc
         self.hpMulti = hpMulti
@@ -17,6 +17,7 @@ class Trait:
         self.skills = skills
         self.overWrites = overWrites #What trait this one overwrites (replaces)
         self.holder = None #What character holds this trait. Initialized in bind()
+        self.nextTraits = nextTraits #Next traits in the path; Traits that this unlocks. Ex: mana affinity -> mana core
 
     #Applies the stat bonuses to the holder of the trait
     def applyStats(self, target):
@@ -39,13 +40,22 @@ class Trait:
         del player.toughnessMultis[self.name]
         del player.powerMultis[self.name]
         del player.mpMultis[self.name]
+        for nextTrait in self.nextTraits:
+            try:
+                del player.nextTraits[player.nextTraits.index(nextTrait)]
+            except:
+                print("Attempted to remove nextTrait that character does not have")
+
         del player.traits[self.name]
     
     #Replaces another trait of the target with itself
     def replaceTrait(self, player):
-        if self.overWrites:
-            removedTrait = player.traits[self.overWrites.name]
-            removedTrait.removeTrait(player)
+        if self.overWrites and self.overWrites in player.traits:
+            try:
+                removedTrait = player.traits[self.overWrites]
+                removedTrait.removeTrait(player)
+            except:
+                pass #Player does not have trait that is getting removed
 
     #Called once at the creation of the trait
     def bind(self, target):
@@ -53,6 +63,10 @@ class Trait:
         self.applyStats(target)
         self.replaceTrait(target)
         self.setSkills(target)
+        if self.name in target.nextTraits:
+            del target.nextTraits[target.nextTraits.index(self.name)]
+        for trait in self.nextTraits:
+            target.nextTraits.append(trait)
 
     #returns colored name
     def displayName(self):

@@ -33,7 +33,7 @@ def init():
     print(style("At a young age, your village was destroyed by the evil Orc Lord. Now that you are of age to get your first trait, you vow to hunt down the monster and defeat him.", "cyan", "italic"))
     spacing(1)
     #initializes the player (maxHP, power, maxMP, toughness, maxStamina, essence, gold)
-    player = Player(10, 1, 3, 1, 5, 0, 0)
+    player = Player(10, 1, 3, 1, 5)
     #Skill comes in format: Skill(Name, "Type", "CostType", cost, skillValue, description, CastMessage)
     punch = Skill("Punch", "attack", "stamina", 1, 1, "A normal punch", "You throw a punch")
     manaBurst = Skill("Mana Burst", "attack", "mp", 2, 1.5, "Shoots a burst of unrefined mana", "You shoot a burst of mana!")
@@ -44,69 +44,65 @@ def init():
     
 #Brings player to trait selection
 def selectTrait():
-    powerTraits = ["Big Muscles", "Herculan Strength"]
-    toughnessTraits = ["Thick Skin", "Goliath's Fortitude"]
-    mpTraits = ["Mana Affinity", "Mana Core"]
-    powerTrait = [trait for trait in player.traits if trait in powerTraits]
-    toughnessTrait = [trait for trait in player.traits if trait in toughnessTraits]
-    mpTrait = [trait for trait in player.traits if trait in mpTraits]
-    
-    try:
-        powerTrait = powerTraits[powerTraits.index(powerTrait[0]) + 1] if powerTrait else powerTraits[0]
-        toughnessTrait = toughnessTraits[toughnessTraits.index(toughnessTrait[0]) + 1] if toughnessTrait else toughnessTraits[0]
-        mpTrait = mpTraits[mpTraits.index(mpTrait[0]) + 1] if mpTrait else mpTraits[0]
-    except:
-        print(red("AN ERROR HAS OCCURED. You have probably reached the end of one of the upgrade lines"))
+    # powerTraits = ["Big Muscles", "Herculan Strength"]
+    # toughnessTraits = ["Thick Skin", "Goliath's Fortitude"]
+    # mpTraits = ["Mana Affinity", "Mana Core"]
+
+    availableTraits = {}
+    for i in range(len(player.nextTraits)):
+        availableTraits[str(i+1)] = player.nextTraits[i] #availableTraits[1] = "Big Muscles"
+
     print("Choose your trait: \n")
-    print(f"({green(1)})" + str(powerTrait))
-    print(f"({green(2)})" + str(toughnessTrait))
-    print(f"({green(3)})" + str(mpTrait))
+    for i in range(len(availableTraits)):
+        print(f"({green(i + 1)})" + str(availableTraits[str(i+1)]))
+    print(f"\n({red(len(availableTraits) + 1)})None (This will handicap you and make the game harder. Good luck)")
+
     spacing(1)
     validInput = False
     while not validInput:
         selection = input("> ").casefold()
-        trait = None
-        if selection == powerTrait.casefold() or selection == "1":
-            if powerTrait == powerTraits[0]:
+        if selection in availableTraits:
+            selection = availableTraits[selection]
+            trait = None
+
+            if selection == "Big Muscles":
                 strongPunch = Skill("Strong Punch", "attack", "stamina", 2.5, 1.5, "Punch with lots of effort", "You punch with all your might!")
-                trait = Trait("power", powerTrait, 1, 1.35, 1.5, 1, 1.2, [strongPunch], "You have very big muscles")
-            elif powerTrait == powerTraits[1]:
+                trait = Trait("power", "Big Muscles", 1, 1.35, 1.5, 1, 1.2, [strongPunch], "You have very big muscles", nextTraits=["Herculan Strength"])
+            elif selection == "Herculan Strength":
                 strongPunch = Skill("Herculan Punch", "attack", "stamina", 3, 2, "Punch with the might of hercules", "You punch with Hercules' strength!")
                 groundStomp = Skill("Meteor Strike", "attack", "stamina", 6, 3, "Leap high into the air and land a devistating kick onto the opponent's head", "You jump into the air and strike from above!")
-                trait = Trait("power", powerTrait, 1, 1.4, 2.5, 1, 1.4, [strongPunch, groundStomp], "Your strength is immense", player.traits["Big Muscles"])
-            player.traits[powerTrait] = trait
-            trait.bind(player)
-            validInput = True
+                trait = Trait("power", "Herculan Strength", 1, 1.4, 2.5, 1, 1.4, [strongPunch, groundStomp], "Your strength is immense", overWrites="Big Muscles")
 
-        elif selection == toughnessTrait.casefold() or selection == "2":
-            if toughnessTrait == toughnessTraits[0]:
+
+            elif selection == "Thick Skin":
                 hardenSkin = BuffSkill("Harden Skin", "stamina", 3, ["toughness"], 2, 3, "Hardens your skin, increasing your toughness", "Your skin hardens.")
-                trait = Trait("toughness", toughnessTrait, 1.2, 1.5, 1, 1, 1.3, [hardenSkin], "You have very tough skin")
+                trait = Trait("toughness", "Thick Skin", 1.2, 1.5, 1, 1, 1.3, [hardenSkin], "You have very tough skin", nextTraits=["Goliath's Fortitude"])
 
-            elif toughnessTrait == toughnessTraits[1]:
+            elif selection == "Goliath's Fortitude":
                 cobaltShell = BuffSkill("Cobalt Shell", "stamina", 5, ["toughness"], 3, 3, "Constructs a shell of cobalt around your body, granting supurb defence", "A shell of cobalt surrounds your body.")
                 reflectiveAura = Skill("Reflective Aura", "attack", "stamina", 4, .5, "For a turn, generates an aura that reflects half of the attacker's damage", "You release a reflective aura.", 0, ["reflect"])
-                trait = Trait("toughness", toughnessTrait, 1.5, 2, 1.2, 1, 1.6, [cobaltShell, reflectiveAura], "Your fortitude is akin to Goliath", player.traits["Thick Skin"])
-            player.traits[toughnessTrait] = trait
-            trait.bind(player)
-            validInput = True
-        
-        elif selection == mpTrait.casefold() or selection == "3":
-            if mpTrait == mpTraits[0]:
+                trait = Trait("toughness", "Goliath's Fortitude", 1.5, 2, 1.2, 1, 1.6, [cobaltShell, reflectiveAura], "Your fortitude is akin to Goliath", overWrites="Thick Skin")
+
+
+            elif selection == "Mana Affinity":
                 manaRecovery = ConvertionSkill("Mana Recovery", "stamina", "mp", 3, .7, "Recover some mana by using stamina", "You recovered some mana", 1)
                 manaBullet = Skill("Mana Bullet", "attack", "mp", 2, 2, "Shoots a bullet of concentrated mana", "You shoot a mana bullet!")
-                trait = Trait("mp", mpTrait, 1, 1, 1, 2, 1, [manaRecovery, manaBullet], "You have an affinity for magic")
+                trait = Trait("mp", "Mana Affinity", 1, 1, 1, 2, 1, [manaRecovery, manaBullet], "You have an affinity for magic", nextTraits=["Mana Core"])
                 del player.skills["Mana Burst"]
-            elif mpTrait == mpTraits[1]:
+            elif selection == "Mana Core":
                 manaRecovery = ConvertionSkill("Mana Recovery", "stamina", "mp", 4, .95, "Efficiently recover some mana by using stamina", "You recovered some mana", 1)
                 magicMissile = Skill("Magic Missile", "attack", "mp", 2, 2.5, "Shoots a missile of concentrated mana", "You shoot a magic missile!")
                 enhance = BuffSkill("Enhance", "mp", 7, ["power", "toughness"], 2, 3, "Enhances the user's body with magic, increasing their power and toughness.", "You enhance your body")
-                trait = Trait("mp", mpTrait, 1, 1, 1, 3, 1, [manaRecovery, magicMissile, enhance], "You have developed a mana core", player.traits["Mana Affinity"])
-            player.traits[mpTrait] = trait
+                trait = Trait("mp", "Mana Core", 1, 1, 1, 3, 1, [manaRecovery, magicMissile, enhance], "You have developed a mana core", overWrites="Mana Affinity")
+            
+            player.traits[selection] = trait
             trait.bind(player)
             validInput = True
 
-        if not validInput:
+        elif selection == "none" or selection == "4":
+            validInput = True #No trait
+
+        if not validInput:  
             print("Please select a valid trait")
     player.calculateStats()
     player.hp = player.maxHP
@@ -446,7 +442,7 @@ def selectDevCommand(selection):
         value = readInt("Enter the damage multiplier of your skill: ", float("inf"))
         desc = input("Please enter your skill's description: ")
         message = input("Please enter your skill's cast Message: ")
-        player.skills[name] = Skill(name, "attack", costType, cost, value, desc, message)
+        Skill(name, "attack", costType, cost, value, desc, message).bind(player)
     elif selection == "devcmds":
         listCommands(devCommands)
     elif selection == "shop":
@@ -473,7 +469,7 @@ def selectDevCommand(selection):
         value = validateInput("", "float", "Please enter a number greater than or equal to 0", lambda x: True if x >= 0 else None)
         player.changeStat(stat, value)
     elif selection == "test":
-        print(player.type)
+        player.essence = 10
 
 #prints out lore based on events - Will be used more after the AP submission
 def lore(key):

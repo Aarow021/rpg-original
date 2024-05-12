@@ -2,7 +2,6 @@
 
 ---------------------------------------------------------
 ====================PRIORITIES====================
-  -make skill bound to player on creation
   -Fix traits error when reaching highest trait level
   -Character init function - call after creation to set child specific attributes (type="player"), ect
 --------------------------------------------------
@@ -20,6 +19,4 @@
 ----------------------------------------------
 ====================STORY====================
   -Essence: All creatures have essence, which makes them stronger. Humans can kill monsters to gather their essence, which in turn strenghthens the human.
-  -Boss - DRAGON
-  -You want to be a dragon slayer
 -------------------------------------------

@@ -1,4 +1,8 @@
 
+5/12/24:
+    Option to not select a trait
+    Trait system reworked (easier to add traits now)
+
 5/11/24:
     Added stamina potion
     Can buy multiple items in shop in 1 trip

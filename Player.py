@@ -6,13 +6,13 @@ from Colors import *
 import random
 class Player(Character):
     
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, *kwargs)
-        self.type = "player"
+    def __init__(self, maxHP, power, maxMP, toughness, maxStamina):
+        super().__init__(maxHP, power, maxMP, toughness, maxStamina, 0, 0, "Player", "")
         self.restCountdown = 3
         self.restCooldown = 2
         self.shopCooldown = 3
         self.monstersKilled = 0
+        self.nextTraits = ["Big Muscles", "Thick Skin", "Mana Affinity"]
     
     def statsheet(self):
         self.calculateStats()
