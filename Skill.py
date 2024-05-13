@@ -147,7 +147,7 @@ class BuffSkill(Skill):
         self.cooldownCap = cooldown if cooldown > self.duration else self.duration
         self.currentTarget = None
         self.turnsLeft = 0
-        super().__init__(name, "conversion", costType, cost, skillValue, description, castMessage, cooldown=self.cooldownCap)
+        super().__init__(name, "buff", costType, cost, skillValue, description, castMessage, cooldown=self.cooldownCap)
 
         
     #Called when the skill is cast

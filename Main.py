@@ -223,7 +223,6 @@ def battle():
                             dmg = monster.defend(skill.cast())
                             dmgTaken = player.defend(monster.attack())
                         nextTurn = True
-
                     elif skill.type == "buff":
                         skill.cast(player)
                     elif skill.type == "conversion":
