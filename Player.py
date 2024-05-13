@@ -16,11 +16,11 @@ class Player(Character):
     
     def statsheet(self):
         self.calculateStats()
-        print('''
+        print(r'''
     O
    \|/ 
     |
-   / \\
+   / \
               ''')
         printSeperator(30, "═")
         print("Traits: ", end="")

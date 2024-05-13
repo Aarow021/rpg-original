@@ -22,7 +22,7 @@ class Character:
         self.toughnessMultis = {}
         self.staminaMultis = {}
         self.traits = {}
-        self.potions = {"hp": 0, "mp": 0, "stamina": 0}
+        self.potions = {}
 
         
     #Calibrates stats with its multipliers

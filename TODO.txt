@@ -1,9 +1,10 @@
 ====================CURRENTLY WORKING ON====================
-
+Clean up Skill class
 ---------------------------------------------------------
 ====================PRIORITIES====================
   -Fix traits error when reaching highest trait level
   -Character init function - call after creation to set child specific attributes (type="player"), ect
+  -Make potion class
 --------------------------------------------------
 
 ======================ADD-ONS=====================
@@ -15,7 +16,7 @@
   -Player save and load JSON
 
 ====================NOTES====================
-  -3 stages, locked behind essence
+  -2 stages, locked behind essence
 ----------------------------------------------
 ====================STORY====================
   -Essence: All creatures have essence, which makes them stronger. Humans can kill monsters to gather their essence, which in turn strenghthens the human.

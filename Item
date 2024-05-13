@@ -1,0 +1,14 @@
+class Item:
+    count = 1
+    holder = None
+
+    #binds item to a character; adds item to inventory
+    def bind(self, holder):
+        self.Holder = holder
+    
+    #Increases amount of item
+    def gain(self, amount):
+        self.count += amount
+
+    def unBind(self):
+        pass

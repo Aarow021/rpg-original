@@ -95,7 +95,7 @@ def colorStat(value, stat):
         return style(value, "green")
     elif stat == "stamina" or stat == "stm":
         return style(value, "yellow")
-    return
+    return str(value)
 
 #These functions return the message in a specific color
 def green(message):

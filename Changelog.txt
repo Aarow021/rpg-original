@@ -2,6 +2,10 @@
 5/12/24:
     Option to not select a trait
     Trait system reworked (easier to add traits now)
+    Shop system reworked (easier to add shop items)
+    Potion system reworked (easier to add new potions)
+    Item class created
+    Added Dark Elf art
 
 5/11/24:
     Added stamina potion

@@ -102,6 +102,13 @@ def validateInput(message, numberType, failMessage="Please enter a valid respons
             print(failMessage)
 
     return response
+
+#returns the difference between 2 numbers
+#distanceToNum(2, 5) -> 3
+#distanceToNum(13, 5) -> 8
+def distanceToNum(num, max):
+    return abs(max - num)
+
         
         
         
