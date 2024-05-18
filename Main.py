@@ -38,8 +38,8 @@ def init():
     #initializes the player (maxHP, power, maxMP, toughness, maxStamina, essence, gold)
     player = Player(10, 1, 3, 1, 5)
     #Skill comes in format: Skill(Name, "Type", "CostType", cost, skillValue, description, CastMessage)
-    punch = Skill("Punch", "attack", "stamina", 1, 1, "A normal punch", "You throw a punch")
-    manaBurst = Skill("Mana Burst", "attack", "mp", 2, 1.5, "Shoots a burst of unrefined mana", "You shoot a burst of mana!")
+    punch = AttackSkill("Punch", "stamina", 1, 1, "A normal punch", "You throw a punch")
+    manaBurst = AttackSkill("Mana Burst", "mp", 2, 1.5, "Shoots a burst of unrefined mana", "You shoot a burst of mana!")
     punch.bind(player)
     manaBurst.bind(player)
     starterPotions = [RecoveryPotion("Health Potion", "hp", 50, 0), RecoveryPotion("Mana Potion", "mp", 100, 0), RecoveryPotion("Stamina Potion", "stamina", 100, 0)]
@@ -73,12 +73,12 @@ def selectTrait():
             trait = None
 
             if selection == "Big Muscles":
-                strongPunch = Skill("Strong Punch", "attack", "stamina", 2.5, 1.5, "Punch with lots of effort", "You punch with all your might!")
-                trait = Trait("power", "Big Muscles", 1, 1.35, 1.5, 1, 1.2, [strongPunch], "You have very big muscles", nextTraits=["Herculan Strength"])
+                strongPunch = AttackSkill("Strong Punch", "stamina", 2.5, 1.5, "Punch with lots of effort", "You punch with all your might!")
+                trait = Trait("power", "Big Muscles", 1, 1.3, 1.3, 1, 1.2, [strongPunch], "You have very big muscles", nextTraits=["Herculan Strength"])
             elif selection == "Herculan Strength":
-                strongPunch = Skill("Herculan Punch", "attack", "stamina", 3, 2, "Punch with the might of hercules", "You punch with Hercules' strength!")
-                groundStomp = Skill("Meteor Strike", "attack", "stamina", 6, 3, "Leap high into the air and land a devistating kick onto the opponent's head", "You jump into the air and strike from above!")
-                trait = Trait("power", "Herculan Strength", 1, 1.4, 2.5, 1, 1.4, [strongPunch, groundStomp], "Your strength is immense", overWrites="Big Muscles")
+                strongPunch = AttackSkill("Herculan Punch", "stamina", 3, 1.75, "Punch with the might of hercules", "You punch with Hercules' strength!")
+                groundStomp = AttackSkill("Meteor Strike", "stamina", 6, 2.5, "Leap high into the air and land a devistating kick onto the opponent's head", "You jump into the air and strike from above!")
+                trait = Trait("power", "Herculan Strength", 1, 1.5, 2, 1, 1.4, [strongPunch, groundStomp], "Your strength is immense", overWrites="Big Muscles")
 
 
             elif selection == "Thick Skin":
@@ -87,18 +87,18 @@ def selectTrait():
 
             elif selection == "Goliath's Fortitude":
                 cobaltShell = BuffSkill("Cobalt Shell", "stamina", 5, ["toughness"], 3, 3, "Constructs a shell of cobalt around your body, granting supurb defence", "A shell of cobalt surrounds your body.")
-                reflectiveAura = Skill("Reflective Aura", "attack", "stamina", 4, .5, "For a turn, generates an aura that reflects half of the attacker's damage", "You release a reflective aura.", 0, ["reflect"])
+                reflectiveAura = ReflectSkill("Reflective Aura", "stamina", 4, 50, "For a turn, generates an aura that reflects half of the attacker's damage", "You release a reflective aura.", 0)
                 trait = Trait("toughness", "Goliath's Fortitude", 1.5, 2, 1.2, 1, 1.6, [cobaltShell, reflectiveAura], "Your fortitude is akin to Goliath", overWrites="Thick Skin")
 
 
             elif selection == "Mana Affinity":
                 manaRecovery = ConvertionSkill("Mana Recovery", "stamina", "mp", 3, .7, "Recover some mana by using stamina", "You recovered some mana", 1)
-                manaBullet = Skill("Mana Bullet", "attack", "mp", 2, 2, "Shoots a bullet of concentrated mana", "You shoot a mana bullet!")
+                manaBullet = AttackSkill("Mana Bullet", "mp", 2, 2, "Shoots a bullet of concentrated mana", "You shoot a mana bullet!")
                 trait = Trait("mp", "Mana Affinity", 1, 1, 1, 2, 1, [manaRecovery, manaBullet], "You have an affinity for magic", nextTraits=["Mana Core"])
                 del player.skills["Mana Burst"]
             elif selection == "Mana Core":
                 manaRecovery = ConvertionSkill("Mana Recovery", "stamina", "mp", 4, .95, "Efficiently recover some mana by using stamina", "You recovered some mana", 1)
-                magicMissile = Skill("Magic Missile", "attack", "mp", 2, 2.5, "Shoots a missile of concentrated mana", "You shoot a magic missile!")
+                magicMissile = AttackSkill("Magic Missile", "mp", 2, 2.5, "Shoots a missile of concentrated mana", "You shoot a magic missile!")
                 enhance = BuffSkill("Enhance", "mp", 7, ["power", "toughness"], 2, 3, "Enhances the user's body with magic, increasing their power and toughness.", "You enhance your body")
                 trait = Trait("mp", "Mana Core", 1, 1, 1, 3, 1, [manaRecovery, magicMissile, enhance], "You have developed a mana core", overWrites="Mana Affinity")
             
@@ -216,13 +216,13 @@ def battle():
                 if skill.checkUsability() == True:
                     attackType = skill.costType
                     if skill.type == "attack":
-                        if "reflect" in skill.mods:
-                            dmg = skill.cast( monster)
-                            dmgTaken = player.defend(monster.attack() * skill.skillValue)
-                        else:
                             dmg = monster.defend(skill.cast())
                             dmgTaken = player.defend(monster.attack())
-                        nextTurn = True
+                            nextTurn = True
+                    elif skill.type == "reflect":
+                            dmg = skill.cast(monster)
+                            dmgTaken = player.defend(monster.attack() * (1 - skill.skillValue))
+                            nextTurn = True
                     elif skill.type == "buff":
                         skill.cast(player)
                     elif skill.type == "conversion":
@@ -432,7 +432,7 @@ def selectDevCommand(selection):
         value = readInt("Enter the damage multiplier of your skill: ", float("inf"))
         desc = input("Please enter your skill's description: ")
         message = input("Please enter your skill's cast Message: ")
-        Skill(name, "attack", costType, cost, value, desc, message).bind(player)
+        AttackSkill(name, costType, cost, value, desc, message).bind(player)
     elif selection == "devcmds":
         listCommands(devCommands)
     elif selection == "shop":
@@ -503,7 +503,7 @@ def gameLoop():
             isDev = True
             print("Dev mode activated")
             listCommands(devCommands)
-            instaKill = Skill("InstaKill", "attack", "stamina", 0, 9999, "Instantly kills the enemy", "You instantly kill the enemy.")
+            instaKill = AttackSkill("InstaKill", "stamina", 0, 9999, "Instantly kills the enemy", "You instantly kill the enemy.")
             instaKill.bind(player)
         if isDev:
             selectDevCommand(selection)

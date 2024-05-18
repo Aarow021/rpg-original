@@ -2,9 +2,8 @@
 Clean up Skill class
 ---------------------------------------------------------
 ====================PRIORITIES====================
-  -Fix traits error when reaching highest trait level
-  -Character init function - call after creation to set child specific attributes (type="player"), ect
-  -Make potion class
+  -Change traits to only apply multis that are not 1
+  -Change reflect skill to be like buff
 --------------------------------------------------
 
 ======================ADD-ONS=====================

@@ -7,7 +7,7 @@ from Colors import colorStat, cyan
 
 #Base skill, does nothing on it's own. Inherit this class in other skill classes
 class Skill:
-    def __init__(self, name, type, costType, cost, skillValue, description, castMessage, cooldown=0, mods = []):
+    def __init__(self, name, type, costType, cost, skillValue, description, castMessage, cooldown=0):
         availableCostTypes = ["mp", "stamina"]
         if costType not in availableCostTypes:
             print("Skill has invalid cost type: [" + str(costType) + "]")
@@ -21,7 +21,6 @@ class Skill:
         self.castMessage = castMessage
         self.cooldown = 0
         self.cooldownCap = cooldown
-        self.mods = mods #Mods change the way the skill works. ex: "reflect" uses the enemies damage instead
         self.holder = None #Character that skill is bound to. use skill.bind(character) to initialize holder
 
     #Makes the spell do it's effect
@@ -72,7 +71,7 @@ class Skill:
 class AttackSkill(Skill):
 
     def __init__(self, name, costType, cost, attackMulti, description, castMessage, cooldown=0):
-        super().__init__(name, "Attack", costType, cost, attackMulti, description, castMessage, cooldown=cooldown)
+        super().__init__(name, "attack", costType, cost, attackMulti, description, castMessage, cooldown=cooldown)
     
     def cast(self, target=None):
         caster = self.holder
@@ -83,13 +82,15 @@ class AttackSkill(Skill):
 class ReflectSkill(Skill):
     def __init__(self, name, costType, cost, reflectPercent, description, castMessage, cooldown=0):
         reflectDecimal = reflectPercent / 100
-        super().__init__(name, "Attack", costType, cost, reflectDecimal, description, castMessage, cooldown)
+        super().__init__(name, "reflect", costType, cost, reflectDecimal, description, castMessage, cooldown)
     
     def cast(self, target=None):
         caster = self.holder
         self.cooldown = self.cooldownCap + 1
         self.consumeResource()
-        return target.attack() * abs( 1 - self.skillValue) + caster.attack() * self.skillValue
+        incomingDamage = target.attack() * abs( 1 - self.skillValue)
+        selfAttack = caster.attack()
+        return incomingDamage + selfAttack
 
 #This skill converts one resource type to another
 class ConvertionSkill(Skill):
