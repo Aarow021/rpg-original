@@ -5,19 +5,8 @@ import math
 from Colors import colorStat, cyan
 
 
+#Base skill, does nothing on it's own. Inherit this class in other skill classes
 class Skill:
-    # name = "GenericSkill"
-    # type = "generic"    #Buff, Damaging, Defensive
-    # costType = "stamina"   
-    # cost = 0
-    # skillValue = 1    
-    # castMessage = "You cast genericSpell!"
-    # description = "This is the base skill class; has no effect"
-    # cooldown = 0
-    # cooldownCap = 0
-    # mods = []  #Mods change the way the skill works. ex: "reflect" uses the enemies damage instead
-    # holder = None  
-
     def __init__(self, name, type, costType, cost, skillValue, description, castMessage, cooldown=0, mods = []):
         availableCostTypes = ["mp", "stamina"]
         if costType not in availableCostTypes:
@@ -39,13 +28,7 @@ class Skill:
     def cast(self, target=None):
         caster = self.holder
         self.cooldown = self.cooldownCap + 1
-        if self.type == "attack":
-            self.consumeResource()
-            if "reflect" in self.mods:
-                #skillValue should be a number between 0 and 1. smaller number = more damage delt and less taken
-                return target.attack() * abs( 1 - self.skillValue) + caster.attack()
-            else:
-                return caster.attack() * self.skillValue
+        #Put the effect of the skill here
 
     #Returns True if the skill can be used, and returns the message why it cant be used if it cant be used
     def checkUsability(self):
@@ -86,16 +69,33 @@ class Skill:
         self.holder = character
         character.skills[self.name] = self
 
+class AttackSkill(Skill):
+
+    def __init__(self, name, costType, cost, attackMulti, description, castMessage, cooldown=0):
+        super().__init__(name, "Attack", costType, cost, attackMulti, description, castMessage, cooldown=cooldown)
+    
+    def cast(self, target=None):
+        caster = self.holder
+        self.cooldown = self.cooldownCap + 1
+        self.consumeResource()
+        return caster.attack() * self.skillValue
+        
+class ReflectSkill(Skill):
+    def __init__(self, name, costType, cost, reflectPercent, description, castMessage, cooldown=0):
+        reflectDecimal = reflectPercent / 100
+        super().__init__(name, "Attack", costType, cost, reflectDecimal, description, castMessage, cooldown)
+    
+    def cast(self, target=None):
+        caster = self.holder
+        self.cooldown = self.cooldownCap + 1
+        self.consumeResource()
+        return target.attack() * abs( 1 - self.skillValue) + caster.attack() * self.skillValue
+
 #This skill converts one resource type to another
 class ConvertionSkill(Skill):
-    name = "ConvertionSkill"
-    type = "conversion"
-    costType = "stamina"   #What is being converted
-    cost = 0
-    convertTo = "mp" #What is the output of the conversion
-    convertionRatio = 1 
-    castMessage = "You cast genericSpell!"
-    description = "This is the base skill class; has no effect"
+    #costType = "stamina"   #What is being converted
+    #convertTo = "mp" #What is the output of the conversion
+    #convertionRatio = 1 
     def __init__(self, name, costType, convertTo, cost, convertionRatio, description, castMessage, cooldown = 0):
         availableCostTypes = ["mp", "stamina"]
         if costType not in availableCostTypes:
@@ -130,17 +130,10 @@ class ConvertionSkill(Skill):
     
 #This skill type effects the stats of the target
 class BuffSkill(Skill):
-    # name = "buffskill"
-    # type = "buff"
-    # costType = "stamina"
-    # cost = 0
-    # skillValue = 1 #Stat multi
-    # duration = 0
-    # turnsLeft = 0 #Duration left
-    # stats = ["power", "toughness"]
-    # castMessage = "You cast BuffSkill!"
-    # description = "Buff skill can buff or debuff!"
-    # currentTarget = None  #Entity that is being buffed
+    # skillValue #Stat multi
+    # turnsLeft #Duration left
+    # currentTarget #Entity that is being buffed
+    # stats: stats that are being buffed. ex: ["power", "toughness"]
     def __init__(self, name, costType, cost, stats, skillValue, duration,  description, castMessage, cooldown=0):
         self.stats = stats 
         self.duration = duration
